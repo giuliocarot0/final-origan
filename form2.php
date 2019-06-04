@@ -1,6 +1,6 @@
 <html>
 
-<form name = "New VIP" action = "insert2.php" method="POST">
+<form name = "New VIP" action = "insert2.php" method=GET>
 
     SSN: <input type="text" name="SSN" size="30" value= "" /> <br>
     Name: <input type="text" name="Name" size="30" value= "" /> <br>
