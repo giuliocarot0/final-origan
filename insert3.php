@@ -1,35 +1,36 @@
 <?php 
 
 include "db_config.php";
-
-    if(!isset($_POST) || $_POST["SSN"]=="" || $_POST["CodC"]=="" || $_POST["Date"]=="" || $_POST["StartTime"]=="" || $_POS["EndTime"]){
+    if(!isset($_GET) || $_GET['SSN']=="" || $_GET['CodC']=="" || $_GET['Date']=="" || $_GET['StartTime']=="" || $_GET['EndTime'] ==""){
         echo "Bad Request";
         http_response_code(400);
     }
 
     $conn = OpenCon();
 
-    $ssn = $_POST["SSN"];
-    $start = $_POST["StartTime"];
-    $end = $_POST["EndTime"];
-    $cod = $_POST["CodC"];
-    $date = $_POST["Date"];
+    $ssn = $_GET["SSN"];
+    $start = $_GET["StartTime"];
+    $end = $_GET["EndTime"];
+    $cod = $_GET["CodC"];
+    $date = $_GET["Date"];
 
-    $check_q = "SELECT COUNT(*) AS Cnt
-                FROM APPEARANCE
-                WHERE SSN $ssn AND $start < EndTime AND $end >StartTime";
+	
+    $check_q = "SELECT COUNT(*)
+                FROM appearance
+                WHERE SSN = '$ssn' AND '$start' < EndTime AND '$end' > StartTime";
 
     $res = mysqli_query($conn, $check_q);
-    $r1 = mysqli_fetch_object($res);
-    if($r1->Cnt > 0){   
-        echo "cannot insert";
-        die();    
-    }
+	
+	if(!$res)
+		die("Error: ".mysqli_error($conn));
+	
+	if(intval(mysqli_fetch_row($res)) > 0)
+		die("Timing overlapping");
 
-    $ins = "INSERT INTO APPEARANCE VALUES('$ssn','$cod','$date','$start','$end')";
+    $ins = "INSERT INTO APPEARANCE VALUES('$ssn','$date','$start','$end','$cod')";
+	 if(!mysqli_query($conn, $ins)) 
+        echo (mysqli_error($conn));
 
-
-
-
+    else echo "successfully added";
 
 ?>
